@@ -21,9 +21,24 @@ Real Estate · Mutual Funds (Equity & Debt) · NPS · EPF · PPF · Stocks · Bo
 
 ```bash
 npm install
-npm run dev      # http://localhost:5180
-npm run build    # production build
+npm run dev      # opens at http://localhost:5180/dev.html
+npm run build    # production build (regenerates index.html / assets at repo root)
 npm run preview  # serve the production build
+```
+
+The repo root holds the **built** `index.html` + `assets/` so GitHub Pages can serve it. `dev.html` is the unbundled source-mode HTML used during `npm run dev` — visit `http://localhost:5180/dev.html` after starting the dev server.
+
+## Deployment
+
+This repo is wired for **GitHub Pages** with a custom domain (`vermawisdom.com`). Any commit to `main` that updates `index.html` + `assets/` ships to production. To rebuild and ship:
+
+```bash
+npm run build               # output goes to dist/
+# overlay the build into the repo root:
+cp dist/index.html dist/404.html dist/favicon.svg .
+cp -r dist/assets .
+git add index.html 404.html favicon.svg assets/
+git commit -m "deploy" && git push
 ```
 
 ## How the math works
