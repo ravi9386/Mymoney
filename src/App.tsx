@@ -7,6 +7,7 @@ import LiabilitiesPage from './pages/Liabilities'
 import ProjectionsPage from './pages/Projections'
 import RetirementPage from './pages/Retirement'
 import SettingsPage from './pages/Settings'
+import InstallPrompt from './components/InstallPrompt'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      <InstallPrompt />
     </AppProvider>
   )
 }

@@ -11,3 +11,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </HashRouter>
   </React.StrictMode>
 )
+
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    const url = new URL('./sw.js', document.baseURI).pathname
+    navigator.serviceWorker.register(url, { scope: './' }).catch(() => {})
+  })
+}
