@@ -21,25 +21,42 @@ Real Estate · Mutual Funds (Equity & Debt) · NPS · EPF · PPF · Stocks · Bo
 
 ```bash
 npm install
-npm run dev      # opens at http://localhost:5180/dev.html
-npm run build    # production build (regenerates index.html / assets at repo root)
-npm run preview  # serve the production build
+npm run dev       # http://localhost:5180 — full React HMR
+npm run build     # writes the production bundle to ./docs/
+npm run preview   # serves ./docs locally on http://localhost:4173/
+npm run icons     # regenerates PWA icons from public/favicon.svg
 ```
 
-The repo root holds the **built** `index.html` + `assets/` so GitHub Pages can serve it. `dev.html` is the unbundled source-mode HTML used during `npm run dev` — visit `http://localhost:5180/dev.html` after starting the dev server.
+The repo root holds **source** (`index.html`, `src/`, `public/`). The Vite build outputs to `./docs/` so GitHub Pages can serve it directly from `main` / `/docs`.
 
 ## Deployment
 
-This repo is wired for **GitHub Pages** with a custom domain (`vermawisdom.com`). Any commit to `main` that updates `index.html` + `assets/` ships to production. To rebuild and ship:
+One command builds, copies into both repos, commits, and pushes:
 
 ```bash
-npm run build               # output goes to dist/
-# overlay the build into the repo root:
-cp dist/index.html dist/404.html dist/favicon.svg .
-cp -r dist/assets .
-git add index.html 404.html favicon.svg assets/
-git commit -m "deploy" && git push
+npm run deploy                       # default commit message
+npm run deploy -- "fix: tweak chart" # custom commit message
+
+# Flags:
+npm run deploy -- --no-build         # reuse the existing docs/ output
+npm run deploy -- --no-push          # build + commit, stay local
+npm run deploy -- --no-claude1       # only push the Mymoney repo
+npm run deploy -- --no-mymoney       # only push the Claude1 mirror
 ```
+
+The script (`scripts/deploy.mjs`) does the following:
+
+1. `npm run build` → `docs/`
+2. Adds `404.html` (SPA fallback) and `.nojekyll` inside `docs/`
+3. Commits `docs/` on this repo (`ravi9386/Mymoney`) and pushes — serves at `https://ravi9386.github.io/Mymoney/`
+4. Mirrors `docs/*` into the sibling `Claude1/mymoney/` working tree, commits, and pushes — serves at `https://vermawisdom.com/mymoney/`
+
+Commit identity is set per-command (`git -c user.name=… -c user.email=…`) so global git config is never touched.
+
+### One-time GitHub Pages setup
+
+- **Mymoney repo:** Settings → Pages → Source = `Deploy from a branch`, Branch = `main`, Folder = `/docs`.
+- **Claude1 repo:** Pages is enabled from `main` / root with `vermawisdom.com` as the custom domain — already configured.
 
 ## How the math works
 

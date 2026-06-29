@@ -1,7 +1,6 @@
 node_modules
-# `dist/` is the Vite build output. We do NOT ignore the built artifacts at
-# the repo root (index.html, 404.html, assets/, favicon.svg) — those are
-# committed so GitHub Pages can serve the app at vermawisdom.com.
+# `dist/` is a stray Vite default — we use `docs/` for the build output
+# (committed so GitHub Pages can serve it from main/docs).
 dist
 dist-ssr
 *.local
